@@ -73,14 +73,13 @@ class Point(object):
     def seek(self, t):
         # target = calculateGoal(self, target)
         target = Point(t.x, t.y)
-        target_dist = self.distance(target)
-        # print("Target..." + str(target), file=sys.stderr)
-        if lap > 0 and target_dist > 2000:
-            target.x -= 3.5 * self.dx
-            target.y -= 3.5 * self.dy
-        # print("Target..." + str(target), file=sys.stderr)
+        print("Target..." + str(target), file=sys.stderr)
+        if lap > 0 and self.distance(target) > 1500:
+            target.x -= 4 * self.dx
+            target.y -= 4 * self.dy
+        print("Target..." + str(target), file=sys.stderr)
         target_angle = self.diff_angle(target)
-
+        # target_dist = self.distance(target)
         # Write an action using print
         # To debug: print("Debug messages...", file=sys.stderr)
         # rad = math.radians(target_angle)
@@ -113,7 +112,7 @@ class Point(object):
             self.target = other
         checkpoint = checkpoints[self.target.next_checkpoint]
         # checkpoint2 = checkpoints[self.target.next_next_checkpoint]
-        target_checkpoint = Point(math.floor((self.target.x + checkpoint.x)/2), math.floor((self.target.y +checkpoint.y)/2))
+        target_checkpoint = Point(math.floor((self.target.x + checkpoint.x)/2), math.floor((self.target.y+checkpoint.y)/2))
         # if self.distance(self.target) > target_checkpoint.distance(checkpoint):
         #    target_checkpoint = Point(math.floor((self.target.x + checkpoint2.x) / 2),
         #                              math.floor((self.target.y + checkpoint2.y) / 2))
@@ -127,12 +126,9 @@ class Point(object):
         target = points[self.next_checkpoint]
         current_target_angle = self.diff_angle(target)
         current_target_dist = self.distance(target)
-        projected_position = Point(self.x + self.dx,self.y+self.dy)
-        projected_target_angle = self.diff_angle(target)
-        projected_target_dist = self.distance(target)
 
-        if current_target_dist < 1500 and 20 > current_target_angle > -20:
-            print(str(self.next_next_checkpoint) + " targeted...", file=sys.stderr)
+        if current_target_dist < 1600 and 20 > current_target_angle > -20:
+           # print(str(self.next_next_checkpoint) + " targeted...", file=sys.stderr)
             target = points[self.next_next_checkpoint]
         return self.seek(target)
 
@@ -153,6 +149,7 @@ def intersect(A, B, C, D):
 
 def check_collision(my_pod, other_pods):
     drag = 0.85
+    threshold = 10
     my_future_position = Point(my_pod.x + my_pod.dx, my_pod.y + my_pod.dy)
     #print("My position..." + str(my_pod), file=sys.stderr)
     #print("My Future position..." + str(my_future_position), file=sys.stderr)
@@ -162,8 +159,8 @@ def check_collision(my_pod, other_pods):
         other_predicted_position = Point(other.x+other.dx, other.y+other.dy)
         #print("other predicted..." + str(other_predicted_position), file=sys.stderr)
         #print("distance..." + str(other_predicted_position.distance(my_future_position)), file=sys.stderr)
-        if abs(other_predicted_position.x - my_future_position.x) < 2 *radius -50 \
-            and abs(other_predicted_position.y - my_future_position.y) < 2 * radius - 50\
+        if abs(other_predicted_position.x - my_future_position.x) < 2 *radius \
+            and abs(other_predicted_position.y - my_future_position.y) < 2 * radius\
                 and (abs(my_pod.dx - other.dx) > my_pod.collision_threshold
                 or abs(my_pod.dy - other.dy) > my_pod.collision_threshold):
                 return True
@@ -208,7 +205,7 @@ for j in range(number_checkpoints):
 
 boost = False
 my_pod1 = Point(0, 0, 0, 0, 0, 0, collision_threshold=300)
-my_pod2 = Point(0, 0, 0, 0, 0, 0, collision_threshold=0)
+my_pod2 = Point(0, 0, 0, 0, 0, 0, collision_threshold=100)
 opponent1 = Point(0, 0, 0, 0, 0, 0)
 opponent2 = Point(0, 0, 0, 0, 0, 0)
 opponents = [opponent1, opponent2]
