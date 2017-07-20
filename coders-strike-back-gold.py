@@ -74,9 +74,9 @@ class Point(object):
         # target = calculateGoal(self, target)
         target = Point(t.x, t.y)
         print("Target..." + str(target), file=sys.stderr)
-        if lap > 0 and self.distance(target) > 1500:
-            target.x -= 4 * self.dx
-            target.y -= 4 * self.dy
+        if lap > 0:  # and self.distance(target) > 1000:
+            target.x -= 3.6 * self.dx
+            target.y -= 3.6 * self.dy
         print("Target..." + str(target), file=sys.stderr)
         target_angle = self.diff_angle(target)
         # target_dist = self.distance(target)
@@ -111,11 +111,11 @@ class Point(object):
         if other.checkpoints_passed > self.target.checkpoints_passed:
             self.target = other
         checkpoint = checkpoints[self.target.next_checkpoint]
-        # checkpoint2 = checkpoints[self.target.next_next_checkpoint]
+        checkpoint2 = checkpoints[self.target.next_next_checkpoint]
         target_checkpoint = Point(math.floor((self.target.x + checkpoint.x)/2), math.floor((self.target.y+checkpoint.y)/2))
-        # if self.distance(self.target) > target_checkpoint.distance(checkpoint):
-        #    target_checkpoint = Point(math.floor((self.target.x + checkpoint2.x) / 2),
-        #                              math.floor((self.target.y + checkpoint2.y) / 2))
+        if self.distance(self.target) > 3.6 * target_checkpoint.distance(checkpoint):
+            target_checkpoint = Point(math.floor((self.target.x + checkpoint2.x) / 2),
+                                      math.floor((self.target.y + checkpoint2.y) / 2))
         move = self.seek(target_checkpoint)
         return move
 
@@ -127,7 +127,7 @@ class Point(object):
         current_target_angle = self.diff_angle(target)
         current_target_dist = self.distance(target)
 
-        if current_target_dist < 1600 and 20 > current_target_angle > -20:
+        if current_target_dist < 1800 and 20 > current_target_angle > -20:
            # print(str(self.next_next_checkpoint) + " targeted...", file=sys.stderr)
             target = points[self.next_next_checkpoint]
         return self.seek(target)
@@ -205,7 +205,7 @@ for j in range(number_checkpoints):
 
 boost = False
 my_pod1 = Point(0, 0, 0, 0, 0, 0, collision_threshold=300)
-my_pod2 = Point(0, 0, 0, 0, 0, 0, collision_threshold=100)
+my_pod2 = Point(0, 0, 0, 0, 0, 0, collision_threshold=50)
 opponent1 = Point(0, 0, 0, 0, 0, 0)
 opponent2 = Point(0, 0, 0, 0, 0, 0)
 opponents = [opponent1, opponent2]
