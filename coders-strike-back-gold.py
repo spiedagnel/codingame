@@ -74,9 +74,13 @@ class Point(object):
         # target = calculateGoal(self, target)
         target = Point(t.x, t.y)
         print("Target..." + str(target), file=sys.stderr)
-        if lap > 0:  # and self.distance(target) > 1000:
-            target.x -= 3.6 * self.dx
-            target.y -= 3.6 * self.dy
+        if lap > 0:
+            if self.distance(target) > 1800:
+                target.x -= 3.6 * self.dx
+                target.y -= 3.6 * self.dy
+            else:
+                target.x -= 3.6 * self.dx
+                target.y -= 3.6 * self.dy
         print("Target..." + str(target), file=sys.stderr)
         target_angle = self.diff_angle(target)
         # target_dist = self.distance(target)
@@ -127,7 +131,9 @@ class Point(object):
         current_target_angle = self.diff_angle(target)
         current_target_dist = self.distance(target)
 
-        if current_target_dist < 1800 and 20 > current_target_angle > -20:
+        if current_target_dist < 2000:
+            target = new_checkpoints[self.next_checkpoint]
+        elif current_target_dist < 1800 and 20 > current_target_angle > -20:
            # print(str(self.next_next_checkpoint) + " targeted...", file=sys.stderr)
             target = points[self.next_next_checkpoint]
         return self.seek(target)
